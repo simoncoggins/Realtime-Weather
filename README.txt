@@ -1,8 +1,8 @@
 Project to produce live weather data for kiting
 
 Two main elements to project:
-- PHP script to scrape data from weather sources and present as single JSON source file
-- JavaScript page to collect latest data and display
+- PHP script to scrape data from weather sources and present as single JSON source file (collect.php)
+- JavaScript page to collect latest data and display (currently table.html)
 
 == Script ==
 
@@ -22,7 +22,7 @@ Output as JSON file:
 var data = { [
 	{
 		name: "Lyall Bay",
-		updated: 1251768111,
+		obsTime: 1251768111,
 		reading: {
 			windSpeed: 13,
 			windDirection: 265,
@@ -31,7 +31,7 @@ var data = { [
 	},
 	{
 		name: "Petone",
-		updated: 1251768208,
+		obsTime: 1251768208,
 		reading: {
 			windSpeed: 20,
 			windDirection: 180,
@@ -46,7 +46,6 @@ data[0].name = "Lyall Bay"
 data[1].reading.windSpeed = 20
 data[1].updated = 1251768208
 
-Indexes need to be mapped to sites
 
 
 == JavaScript page ==
