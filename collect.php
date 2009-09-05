@@ -255,13 +255,20 @@ function merge_site_data($feed, $latest) {
     return $ret;
 }
 
+/**
+ * Given a valid compass bearing returns the appropriate cardinal point
+ * 
+ * @param float $bearing The bearing to be converted
+ * @returns string The cardinal point (e.g. NW) for the bearing or false if invalid
+ * 
+ */
 function bearing2compass($bearing) {
     // check input
     if(!isset($bearing) || $bearing > 360 || $bearing < 0) {
         return false;
     }
     // define cardinal directions
-    $cardinals = array('N', 'NNE', 'NE', 'NEE', 'E', 'ESE', 'SE', 'SSE', 
+    $cardinals = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 
                        'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW');
     // calculate array index to use
     $key = (int) ($bearing/360.0 * 16) + 0.5;
