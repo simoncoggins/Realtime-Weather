@@ -44,14 +44,14 @@ Accessed as:
 
 data[0].name = "Lyall Bay"
 data[1].reading.windSpeed = 20
-data[1].updated = 1251768208
+data[1].obsTime = 1251768208
 
 
 
 == JavaScript page ==
 
 use setInterval to collect JSON file every ~30s
-compare data[i].updated to date stamp on currently displayed readings
+compare data[i].obsTime to date stamp on currently displayed readings
 If newer, update the reading and the date stamp
 
 Provide a counter (time to refresh), and a button to refresh instantly
@@ -59,4 +59,17 @@ Indicate new updates with a brief flash?
 
 Start with a table of data, then add map and other visualizations?
 
+Note, for value checking wunderground feeds use -999 as null value (at least for wind direction).
 
+
+== To Do ==
+
+- add wind gust, temperature, pressure
+- add lat/lng from file if present?
+- improve Time Ago in table (two units or just secs)
+- get page to auto refresh with countdown
+- colours to warn of old data
+- map version
+- let users pick units
+- correct plurialisation of time units
+- convert degrees into NW/SE etc

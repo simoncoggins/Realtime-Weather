@@ -31,6 +31,7 @@
 $sites = array();
 
 $sites[] = array('name' => 'Eastbourne',
+              'link' => 'http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=IWELLING17',
               'source' => 'http://api.wunderground.com/weatherstation/WXCurrentObXML.asp?ID=IWELLING17',
               'format' => 'wund',
               'tags' => array('windSpeedMph' => 'wind_mph',
@@ -39,6 +40,7 @@ $sites[] = array('name' => 'Eastbourne',
            );
 
 $sites[] = array('name' => 'Waikanae Beach',
+              'link' => 'http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=IWAIKANA1',
               'source' => 'http://api.wunderground.com/weatherstation/WXCurrentObXML.asp?ID=IWAIKANA1',
               'format' => 'wund',
               'tags' => array('windSpeedMph' => 'wind_mph',
@@ -47,6 +49,7 @@ $sites[] = array('name' => 'Waikanae Beach',
            );
 
 $sites[] = array('name' => 'Lyall Bay/Airport',
+              'link' => 'http://www.wunderground.com/cgi-bin/findweather/getForecast?query=NZWN&wuSelect=WEATHER',
               'source' => 'http://api.wunderground.com/auto/wui/geo/WXCurrentObXML/index.xml?query=NZWN',
               'format' => 'wund',
               'tags' => array('windSpeedMph' => 'wind_mph',
@@ -55,6 +58,7 @@ $sites[] = array('name' => 'Lyall Bay/Airport',
            );
            
            $sites[] = array('name' => 'Seatoun',
+              'link' => 'http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=I90580064',
               'source' => 'http://api.wunderground.com/weatherstation/WXCurrentObXML.asp?ID=I90580064',
               'format' => 'wund',
               'tags' => array('windSpeedMph' => 'wind_mph',
@@ -63,6 +67,7 @@ $sites[] = array('name' => 'Lyall Bay/Airport',
            );
            
 $sites[] = array('name' => 'Petone',
+              'link' => 'http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=IWELLING15',
               'source' => 'http://api.wunderground.com/weatherstation/WXCurrentObXML.asp?ID=IWELLING15',
               'format' => 'wund',
               'tags' => array('windSpeedMph' => 'wind_mph',
@@ -71,6 +76,7 @@ $sites[] = array('name' => 'Petone',
            );
            
 $sites[] = array('name' => 'Point Jerningham',
+              'link' => 'http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=IWELLING25',
               'source' => 'http://api.wunderground.com/weatherstation/WXCurrentObXML.asp?ID=IWELLING25',
               'format' => 'wund',
               'tags' => array('windSpeedMph' => 'wind_mph',
@@ -79,6 +85,7 @@ $sites[] = array('name' => 'Point Jerningham',
            );
 
 $sites[] = array('name' => 'Paraparaumu',
+              'link' => 'http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=INIOTAIH2',
               'source' => 'http://api.wunderground.com/weatherstation/WXCurrentObXML.asp?ID=INIOTAIH2',
               'format' => 'wund',
               'tags' => array('windSpeedMph' => 'wind_mph',
@@ -87,6 +94,7 @@ $sites[] = array('name' => 'Paraparaumu',
            );
            
 $sites[] = array('name' => 'Plimmerton',
+              'link' => 'http://www.plimmertonboatingclub.org.nz/weatherstation.htm',
               'source' => 'http://www.plimmertonboatingclub.org.nz/weather/clientraw.txt',
               'format' => 'wdl',
               'tagformat' => 'text',

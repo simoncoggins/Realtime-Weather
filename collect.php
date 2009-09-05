@@ -112,6 +112,10 @@ function convert_reading(&$reading, $format) {
             if(isset($reading['obsTime'])) {
                 $reading['obsTimeFormatted'] = strftime('%c',$reading['obsTime']);   
             }
+            // add cardinal wind direction
+            if(isset($reading['windDir'])) {
+                $reading['windCardinal'] = bearing2compass($reading['windDir']);
+            }
             break;
         
         case 'wind':
@@ -125,6 +129,10 @@ function convert_reading(&$reading, $format) {
             // also send a formatted date string
             if(isset($reading['obsTime'])) {
                 $reading['obsTimeFormatted'] = strftime('%c',$reading['obsTime']);   
+            }
+            // add cardinal wind direction
+            if(isset($reading['windDir'])) {
+                $reading['windCardinal'] = bearing2compass($reading['windDir']);
             }
             break;
             
@@ -143,6 +151,10 @@ function convert_reading(&$reading, $format) {
             // also send a formatted date string
             if(isset($reading['obsTime'])) {
                 $reading['obsTimeFormatted'] = strftime('%c',$reading['obsTime']);   
+            }
+            // add cardinal wind direction
+            if(isset($reading['windDir'])) {
+                $reading['windCardinal'] = bearing2compass($reading['windDir']);
             }
         break;
     }
@@ -165,6 +177,7 @@ function get_site_data($site) {
     // build output array
     $sitedata['name'] = $site['name'];
     $sitedata['reading'] = $reading;
+    $sitedata['link'] = $site['link'];
     return $sitedata;
 }
 
@@ -242,7 +255,19 @@ function merge_site_data($feed, $latest) {
     return $ret;
 }
 
+function bearing2compass($bearing) {
+    // check input
+    if(!isset($bearing) || $bearing > 360 || $bearing < 0) {
+        return false;
+    }
+    // define cardinal directions
+    $cardinals = array('N', 'NNE', 'NE', 'NEE', 'E', 'ESE', 'SE', 'SSE', 
+                       'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW');
+    // calculate array index to use
+    $key = (int) ($bearing/360.0 * 16) + 0.5;
 
+    return $cardinals[$key];
+}
 
 // Path to latest data feed
 $feedfile = 'data.json';
@@ -272,20 +297,6 @@ else {
     print "<h3>No changes to original feed:</h3>";
     print "<pre>".print_r($feed,true)."</pre>";
 }
-
-
-//TODO:
-// - add wind gust, temperature, pressure
-// - add source URL
-// - add lat/lng from file if present?
-// - improve Time Ago in table (two units or just secs)
-// - get page to auto refresh with countdown
-// - colours to warn of old data
-// - map version
-// - let users pick units
-// - correct plurialisation of time units
-// - convert degrees into NW/SE etc
-    
 
 
 ?>

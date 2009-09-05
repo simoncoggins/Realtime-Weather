@@ -40,10 +40,12 @@ $(document).ready(function() {
                 var site = item['name'];
                 var windSpeed = item['reading']['windSpeed'];
                 var windDir = item['reading']['windDir'];
+                var windCardinal = item['reading']['windCardinal'];
                 var obsTime = item['reading']['obsTime'];
                 var obsTimeFormatted = item['reading']['obsTimeFormatted'];
                 var agoString = get_ago_string(obsTime);
-                var htmlStr = '<tr><td>'+site+'</td><td>'+windSpeed+'</td><td>'+windDir+'</td><td>'+obsTimeFormatted+'</td><td>'+agoString+'</td></tr>';
+                var link = item['link'];
+                var htmlStr = '<tr><td>'+site+'</td><td>'+windSpeed+'</td><td>'+windDir+' ('+windCardinal+')</td><td>'+obsTimeFormatted+'</td><td>'+agoString+'</td><td><a href="'+link+'">Link</a></td></tr>';
                 $('tbody#tablebody').html($('tbody#tablebody').html()+htmlStr );
 
             });
@@ -63,6 +65,7 @@ $(document).ready(function() {
    <th>Wind Direction (degrees)</th>
    <th>Observation Time</th>
    <th>Time Ago</th>
+   <th>Source</th>
   </tr>
  </thead>
  <tbody id="tablebody">
