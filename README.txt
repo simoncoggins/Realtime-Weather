@@ -64,12 +64,21 @@ Note, for value checking wunderground feeds use -999 as null value (at least for
 
 == To Do ==
 
-- add wind gust, temperature, pressure
+- deal with data.json caching issues
+- error handling if data cannot be loaded
+- add wind gust, temperature, pressure, others?
 - add lat/lng from file if present?
 - improve Time Ago in table (two units or just secs)
-- get page to auto refresh with countdown
-- colours to warn of old data
+- colours in ago column to warn of old data
+- colours to indicate good/bad conditions (right wind speed range, right wind dir for site?)
 - map version
-- let users pick units
+- let users pick units (e.g. kts/mph/ms^-1/kph)
 - correct plurialisation of time units
-- convert degrees into NW/SE etc
+
+== Longer term To Do ==
+
+- Add trend graphs showing change over last few hours
+- Add forecasts if possible
+- Recommendations/star ratings of each site in real-time?
+- Make a small pop-up version
+

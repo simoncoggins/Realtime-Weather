@@ -276,8 +276,18 @@ function bearing2compass($bearing) {
     return $cardinals[$key];
 }
 
+
+
+
+// debug mode
+$debug = true;
+
 // Path to latest data feed
 $feedfile = 'data.json';
+
+// message to display if viewed directly
+$message = "This script collects real time weather data from publicly available data feeds. If this script 
+            is causing problems or for further information please contact the site administrator.";
 
 // import data sources to use
 require_once('data-sources.php');
@@ -296,13 +306,21 @@ foreach ($sites as $site) {
 // compare latest data to feed and 
 // update feed file if changes required
 if ($merged = merge_site_data($feed, $latest)) {
-    file_put_contents('data.json',json_encode($merged));
-    print "<h3>Data Feed Updated:</h3>";
-    print "<pre>".print_r($merged,true)."</pre>";
+    file_put_contents($feedfile,json_encode($merged));
+    if($debug) {
+        print "<h3>Data Feed Updated:</h3>";
+        print "<pre>".print_r($merged,true)."</pre>";
+    } else {
+        print $message;    
+    }
 }
 else {
-    print "<h3>No changes to original feed:</h3>";
-    print "<pre>".print_r($feed,true)."</pre>";
+    if($debug) {
+        print "<h3>No changes to original feed:</h3>";
+        print "<pre>".print_r($feed,true)."</pre>";
+    } else {
+        print $message;
+    }
 }
 
 
