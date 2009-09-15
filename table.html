@@ -7,6 +7,7 @@
 // global to keep track of update countdown
 var clockTime = 0;
 
+// returns the "Time Ago" string for a specific observation time (UNIX timestamp)
 function get_ago_string(obsTime) {
   var d = new Date();
   var now = d.getTime()/1000.0;
@@ -19,12 +20,19 @@ function get_ago_string(obsTime) {
 
 }
 
+// given a number of seconds, returns a formatted "Time Ago" string
 function agostr(secs) {
-  var level=2;
-  var out='';
-  
+  var out='';  
   var periods = [365.25*24*60*60, 24*60*60, 60*60, 60, 1];
   var strings = ['y ','d ','h ','m ','s'];
+  // maximum number of time units to display
+  // e.g. 4h 10m = 2 levels
+  //      1y 34d 5h 6m 10s = 5 levels
+  var level=2;
+    
+  // loop through successively smaller time periods, trying 
+  // to subtract whole numbers of units from the total
+  // and appending to output when successful
   $.each(periods, function(i,period) {
       if (secs >= period && level > 0) {
         var num = parseInt(secs/period);
@@ -38,6 +46,7 @@ function agostr(secs) {
   
 }
 
+// builds the HTML code that makes up the table using JSON data
 function buildData(data){
     // if data loaded, empty the table ready for values
     $('tbody#tablebody').html('');
@@ -57,6 +66,7 @@ function buildData(data){
             
 }
 
+// replaces contents of #clock element with current time to update value
 function updateClock() {
     var timeSecs = parseInt(clockTime/1000.0);
     
@@ -65,23 +75,29 @@ function updateClock() {
     $('#clock').html('Next update in '+reading);
 }
 
+// modifies the global clockTime and updates the clock
 function resetClock(when) {
     clockTime = when;
     updateClock();
 }
 
+// decrease the clock time by 1 second and updates the clock
 function decrementClock() {
     clockTime -= 1000;
     updateClock();
 }
 
+// determines how long (in milliseconds) before the page 
+// should next try to obtain fresh data via ajax
+// The interval and delay variables must be set in this function to 
+// synchronise with the cron schedule of the collection script
 function getTimeToUpdate() {
     
     // extra time to allow collection script to run
     // may need to adjust depending on how many external feeds are being pulled in
     // ideally we want it just long enough that collection script will always have run
     // just before ajax request
-    var buffer=8000; // milliseconds
+    var delay=8000; // milliseconds
     
     // modify to match different cron schedule
     var now = new Date();
@@ -94,18 +110,21 @@ function getTimeToUpdate() {
     var currentTime = now.getMinutes()+now.getSeconds()/60;
     var segment = parseInt(currentTime / interval);
     var nextSegment = (segment+1)*interval;
-    var timeToUpdate = (nextSegment - currentTime) * 60 * 1000 + buffer; // in milliseconds
+    var timeToUpdate = (nextSegment - currentTime) * 60 * 1000 + delay; // in milliseconds
 
     // simple sanity check to avoid overloading the browser
     if (timeToUpdate < 1000) {
         timeToUpdate = 1000;
     }
 
+    // adjust the clock to show time to next update
     resetClock(timeToUpdate);
 
     return timeToUpdate; 
 }
 
+// update the table via AJAX, then calculate when next update should
+// occur and setTimeout to call this function again when required
 function updateTable() {
     // get latest date from JSON and update the page
     var source="http://localhost:8888/kiting/data.json";
@@ -122,7 +141,6 @@ function updateTable() {
                 buildData(data);
             },
         error: function(xmlreq, textStatus, errorThrown) {
-                console.log(textStatus,errorThrown);
                 if (textStatus=="error") {
                     $('#msg').html('Error: Could not load data file');
                 }
@@ -136,20 +154,24 @@ function updateTable() {
     });
 
     var nextUpdate = getTimeToUpdate();
-    if (nextUpdate && nextUpdate > 5000) {
+    if (nextUpdate && nextUpdate >= 1000) {
         // call this function again to refresh table when new data is expected to have arrived
         setTimeout("updateTable()",nextUpdate);
     } else {
-        // maximum refresh rate of once every 5 seconds
-        setTimeout("updateTable()",5000);
+        // maximum refresh rate of once every second
+        setTimeout("updateTable()",1000);
     }
 }
+
 
 $(document).ready(function() {
     // Show loading indicator
     $('tbody#tablebody').html('<tr><td colspan="6"><strong>Loading data...</strong></td></tr>');
     
+    // start updating the table data
     updateTable();
+    
+    // start counting down the time to next update clock
     setInterval("decrementClock()",1000);
     
 
