@@ -14,7 +14,11 @@ var CFG = {
     // how many minutes between server updates
     cronInterval: 15, 
     // how long to wait for server updates to complete (milliseconds)
-    loadDelay: 10000  // 10 secs
+    loadDelay: 10000,  // 10 secs
+    // how long between page refreshes (to update time ago field)
+    reloadInterval: 10, // seconds
+    // somewhere to store the data array
+    data: null
 };
 
 
@@ -107,7 +111,8 @@ function getTableRow(item) {
 
 
 // builds the HTML code that makes up the table using JSON data
-function buildData(data){
+function buildData(){
+    var data = CFG.data;
     // if data loaded, empty the table ready for values
     $('tbody#tablebody').html('');
     // loop through each site in turn
@@ -139,6 +144,10 @@ function resetClock(when) {
 // decrease the clock time by 1 second and updates the clock
 function decrementClock() {
     CFG.clockTime -= 1000;
+    // every reloadInterval secs, refresh the page without new data
+    if(Math.round(CFG.clockTime/1000.0) % CFG.reloadInterval == 0) {
+        buildData();
+    }
     updateClock();
 }
 
@@ -186,7 +195,9 @@ function updateTable() {
                     $('#msg').html('Unspecified error loading data');
                     $('#msg').addClass('error');
                 }
-                buildData(data);
+                // store the current data in global CFG object
+                CFG.data = data;
+                buildData();
             },
         error: function(xmlreq, textStatus, errorThrown) {
                 if (textStatus=="error") {

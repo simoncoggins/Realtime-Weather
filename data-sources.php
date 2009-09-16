@@ -65,7 +65,7 @@ $sites[] = array('name' => 'Lyall Bay/Airport',
                               'temp' => 'temp_c',
                               'pressure' => 'pressure_mb',
                               'windGustMph' => 'wind_gust_mph'),
-              'comment' => 'Updates hourly.'
+              'comment' => 'Updates every 1-2 hours.'
            );
            
            $sites[] = array('name' => 'Seatoun',

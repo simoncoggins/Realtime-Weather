@@ -312,14 +312,15 @@ function bearing2compass($bearing) {
 
 
 // debug mode
-$debug = true;
+$debug = false;
 
 // Path to latest data feed
 $feedfile = 'data.json';
 
 // message to display if viewed directly
-$message = "This script collects real time weather data from publicly available data feeds. If this script 
-            is causing problems or for further information please contact the site administrator.";
+$message = 'This script collects real time weather data from publicly available data feeds. See 
+            <a href="kiting.html">this</a> page for further information. If this script is causing 
+            problems or for further information please contact the site administrator.';
 
 // import data sources to use
 require_once('data-sources.php');
