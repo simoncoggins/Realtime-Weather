@@ -64,13 +64,9 @@ Note, for value checking wunderground feeds use -999 as null value (at least for
 
 == To Do ==
 
-- table sort order
 - get collect.php working from the command line/cron
-- better data cleansing and dealing with bad data values (server side)
 - update time ago more regularly than each server call?
-- add wind gust, temperature, pressure, others?
 - add lat/lng from file if present?
-- colours to indicate good/bad conditions (right wind speed range, right wind dir for site?)
 - map version
 - let users pick units (e.g. kts/mph/ms^-1/kph)
 
@@ -79,5 +75,6 @@ Note, for value checking wunderground feeds use -999 as null value (at least for
 - Add trend graphs showing change over last few hours
 - Add forecasts if possible
 - Recommendations/star ratings of each site in real-time?
+- or just colours to indicate good/bad conditions (right wind speed range, right wind dir for site?)
 - Make a mini pop-up version
 

@@ -36,7 +36,11 @@ $sites[] = array('name' => 'Eastbourne',
               'format' => 'wund',
               'tags' => array('windSpeedMph' => 'wind_mph',
                               'windDir' => 'wind_degrees',
-                              'obsTimeRFC822' => 'observation_time_rfc822')
+                              'obsTimeRFC822' => 'observation_time_rfc822',
+                              'temp' => 'temp_c',
+                              'pressure' => 'pressure_mb',
+                              'windGustMph' => 'wind_gust_mph'),
+              'comment' => 'Seems to be offline at present'
            );
 
 $sites[] = array('name' => 'Waikanae Beach',
@@ -45,7 +49,10 @@ $sites[] = array('name' => 'Waikanae Beach',
               'format' => 'wund',
               'tags' => array('windSpeedMph' => 'wind_mph',
                               'windDir' => 'wind_degrees',
-                              'obsTimeRFC822' => 'observation_time_rfc822')
+                              'obsTimeRFC822' => 'observation_time_rfc822',
+                              'temp' => 'temp_c',
+                              'pressure' => 'pressure_mb',
+                              'windGust' => 'wind_gust_mph')
            );
 
 $sites[] = array('name' => 'Lyall Bay/Airport',
@@ -54,7 +61,10 @@ $sites[] = array('name' => 'Lyall Bay/Airport',
               'format' => 'wund',
               'tags' => array('windSpeedMph' => 'wind_mph',
                               'windDir' => 'wind_degrees',
-                              'obsTimeRFC822' => 'observation_time_rfc822')
+                              'obsTimeRFC822' => 'observation_time_rfc822',
+                              'temp' => 'temp_c',
+                              'pressure' => 'pressure_mb',
+                              'windGustMph' => 'wind_gust_mph')
            );
            
            $sites[] = array('name' => 'Seatoun',
@@ -63,7 +73,10 @@ $sites[] = array('name' => 'Lyall Bay/Airport',
               'format' => 'wund',
               'tags' => array('windSpeedMph' => 'wind_mph',
                               'windDir' => 'wind_degrees',
-                              'obsTimeRFC822' => 'observation_time_rfc822')
+                              'obsTimeRFC822' => 'observation_time_rfc822',
+                              'temp' => 'temp_c',
+                              'pressure' => 'pressure_mb',
+                              'windGustMph' => 'wind_gust_mph')
            );
            
 $sites[] = array('name' => 'Petone',
@@ -72,7 +85,10 @@ $sites[] = array('name' => 'Petone',
               'format' => 'wund',
               'tags' => array('windSpeedMph' => 'wind_mph',
                               'windDir' => 'wind_degrees',
-                              'obsTimeRFC822' => 'observation_time_rfc822')
+                              'obsTimeRFC822' => 'observation_time_rfc822',
+                              'temp' => 'temp_c',
+                              'pressure' => 'pressure_mb',
+                              'windGustMph' => 'wind_gust_mph')
            );
            
 $sites[] = array('name' => 'Point Jerningham',
@@ -81,7 +97,10 @@ $sites[] = array('name' => 'Point Jerningham',
               'format' => 'wund',
               'tags' => array('windSpeedMph' => 'wind_mph',
                               'windDir' => 'wind_degrees',
-                              'obsTimeRFC822' => 'observation_time_rfc822')
+                              'obsTimeRFC822' => 'observation_time_rfc822',
+                              'temp' => 'temp_c',
+                              'pressure' => 'pressure_mb',
+                              'windGustMph' => 'wind_gust_mph')
            );
 
 $sites[] = array('name' => 'Paraparaumu',
@@ -90,9 +109,14 @@ $sites[] = array('name' => 'Paraparaumu',
               'format' => 'wund',
               'tags' => array('windSpeedMph' => 'wind_mph',
                               'windDir' => 'wind_degrees',
-                              'obsTimeRFC822' => 'observation_time_rfc822')
+                              'obsTimeRFC822' => 'observation_time_rfc822',
+                              'temp' => 'temp_c',
+                              'pressure' => 'pressure_mb',
+                              'windGustMph' => 'wind_gust_mph')
            );
            
+// See here for clientraw.txt data specification:
+// http://www.tnetweather.com/nb-0100.php
 $sites[] = array('name' => 'Plimmerton',
               'link' => 'http://www.plimmertonboatingclub.org.nz/weatherstation.htm',
               'source' => 'http://www.plimmertonboatingclub.org.nz/weather/clientraw.txt',
@@ -100,6 +124,9 @@ $sites[] = array('name' => 'Plimmerton',
               'tagformat' => 'text',
               'tags' => array('windDir' => 3,
                               'windSpeed' => 1,
+                              'windGust' => 2,
+                              'temp' => 4,
+                              'pressure' => 6,
                               'obsHour' => 29,
                               'obsMin' => 30,
                               'obsSec' => 31,

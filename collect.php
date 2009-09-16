@@ -8,11 +8,11 @@
  * @return First match to query, or false if no match
  */
 function get_value_by_xpath($xpath, $query) {
-    $match = $xpath->query($query); //->item(0)->nodeValue; 
-    if($match !== NULL) {
-        return $match;
-    } else {
+    $match = $xpath->query($query); 
+    if($match === null || $match == "") {
         return false;
+    } else {
+        return $match;
     }
 }
 
@@ -25,19 +25,29 @@ function get_value_by_xpath($xpath, $query) {
  */
 function get_value_by_tag_name($doc, $tag) {
     $match = $doc->getElementsByTagName($tag)->item(0)->nodeValue;
-    if($match !== NULL) {
-        return $match;
-    } else {
+    if($match === null || $match == "") {
         return false;
+    } else {
+        return $match;
     }
 }
 
-function get_value_from_text_file($source_as_array, $tag) {
-    if(isset($source_as_array[$tag])) {
-        return $source_as_array[$tag];   
+/**
+ * Obtain an individual value from an array by array key
+ * 
+ * Could just get via $source[$key] but this function does some checks
+ * and returns false in consistent way to other get_value_by_* functions
+ * 
+ * @param array $source_as_array Array of elements to look through
+ * @param string $key Key to find
+ * @return Matching element, or false if no match
+ */
+function get_value_by_array_key($source_as_array, $key) {
+    if(!isset($source_as_array[$key]) || $source_as_array[$key] == "") {
+        return false;   
     }
     else {
-        return false;
+        return $source_as_array[$key];
     }
 }
 
@@ -80,7 +90,7 @@ function get_reading($source, $tags, $querytype="tags") {
                 $readings[$key] = get_value_by_tag_name($doc, $tag);
                 break;
             case 'text':
-                $readings[$key] = get_value_from_text_file($source_as_array, $tag);
+                $readings[$key] = get_value_by_array_key($source_as_array, $tag);
                 break;
         }
     }
@@ -94,53 +104,62 @@ function get_reading($source, $tags, $querytype="tags") {
  * @param array $reading Passed by reference. Array of readings to convert
  * @param string $convert Name of type of feed to determine what is required
  */
-function convert_reading(&$reading, $format) {
+function convert_reading(&$reading, $format=null) {
+    // conversions specific to individual formats
     switch ($format) {
         // XML file from http://api.wunderground.com/
         case 'wund':
             // convert MPH into knots
             if(isset($reading['windSpeedMph'])) {
-                $reading['windSpeed'] = $reading['windSpeedMph']*0.87;
+                if ($reading['windSpeedMph'] !== false) {
+                    $reading['windSpeed'] = $reading['windSpeedMph']*0.87;
+                } else {
+                    $reading['windSpeed'] = false;
+                }
                 unset($reading['windSpeedMph']);
+            }
+            if(isset($reading['windGustMph'])) {
+                if ($reading['windGustMph'] !== false) {
+                    $reading['windGust'] = $reading['windGustMph']*0.87;
+                } else {
+                    $reading['windGust'] = false;
+                }
+                unset($reading['windGustMph']);
             }
             // convert RFC822 timestamp into UNIX timestamp
             if(isset($reading['obsTimeRFC822'])) {
-                $reading['obsTime'] = strtotime($reading['obsTimeRFC822']);
+                if($reading['obsTimeRFC822'] !== false) {
+                    $reading['obsTime'] = strtotime($reading['obsTimeRFC822']);
+                } else {
+                    $reading['obsTime'] = false;
+                }
                 unset($reading['obsTimeRFC822']);
-            }
-            // also send a formatted date string
-            if(isset($reading['obsTime'])) {
-                $reading['obsTimeFormatted'] = strftime('%c',$reading['obsTime']);   
-            }
-            // add cardinal wind direction
-            if(isset($reading['windDir'])) {
-                $reading['windCardinal'] = bearing2compass($reading['windDir'] % 360);
             }
             break;
         
         case 'wind':
             // convert YYYYMMDDHHMMSS into UNIX timestamp
             if(isset($reading['obsTimeYMDHMS'])) {
-                preg_match('/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/', $reading['obsTimeYMDHMS'], $matches);
-                list($all,$yr,$mth,$day,$hr,$mn,$sc) = $matches;
-                $reading['obsTime'] = mktime($hr,$mn,$sc,$mth,$day,$yr);
+                if($reading['obsTimeYMDHMS'] !== false) {
+                    preg_match('/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/', $reading['obsTimeYMDHMS'], $matches);
+                    list($all,$yr,$mth,$day,$hr,$mn,$sc) = $matches;
+                    $reading['obsTime'] = mktime($hr,$mn,$sc,$mth,$day,$yr);
+                } else {
+                    $reading['obsTime'] = false;
+                }
                 unset($reading['obsTimeYMDHMS']);
-            }
-            // also send a formatted date string
-            if(isset($reading['obsTime'])) {
-                $reading['obsTimeFormatted'] = strftime('%c',$reading['obsTime']);   
-            }
-            // add cardinal wind direction
-            if(isset($reading['windDir'])) {
-                $reading['windCardinal'] = bearing2compass($reading['windDir']);
             }
             break;
             
         case 'wdl':
             // convert individual dates to timestamp
             if (isset($reading['obsDay']) && isset($reading['obsMon']) && isset($reading['obsYear'])) {
-                $reading['obsTime'] = mktime($reading['obsHour'], $reading['obsMin'], $reading['obsSec'],
-                                             $reading['obsMon'], $reading['obsDay'], $reading['obsYear']);
+                if($reading['obsDay'] !== false && $reading['obsMon'] !== false && $reading['obsYear'] !== false) {
+                    $reading['obsTime'] = mktime($reading['obsHour'], $reading['obsMin'], $reading['obsSec'],
+                                                 $reading['obsMon'], $reading['obsDay'], $reading['obsYear']);
+                } else {
+                    $reading['obsTime'] = false;
+                }
                 unset($reading['obsHour']);
                 unset($reading['obsMin']);
                 unset($reading['obsSec']);
@@ -148,16 +167,27 @@ function convert_reading(&$reading, $format) {
                 unset($reading['obsMon']);
                 unset($reading['obsYear']);  
             }
-            // also send a formatted date string
-            if(isset($reading['obsTime'])) {
-                $reading['obsTimeFormatted'] = strftime('%c',$reading['obsTime']);   
-            }
-            // add cardinal wind direction
-            if(isset($reading['windDir'])) {
-                $reading['windCardinal'] = bearing2compass($reading['windDir']);
-            }
         break;
     }
+    
+    // conversions applicable to all formats
+
+    // also send a formatted date string
+    if($reading['obsTime'] !== false) {
+        $reading['obsTimeFormatted'] = strftime('%c',$reading['obsTime']);   
+    } else {
+        $reading['obsTimeFormatted'] = false;   
+    }
+
+    if($reading['windDir'] !== false) {
+        // standardise direction to 0 -> 359
+        $reading['windDir'] = $reading['windDir'] % 360;
+        // add cardinal wind direction
+        $reading['windCardinal'] = bearing2compass($reading['windDir']);
+    } else {
+        $reading['windCardinal'] = false;
+    }
+
 }
 
 /**
@@ -171,13 +201,14 @@ function get_site_data($site) {
     // get readings from XML feed
     $reading = get_reading($site['source'], $site['tags'], $querytype);
     // convert reading format if required
-    if(isset($site['format'])) {
-        convert_reading($reading, $site['format']);   
-    }
+    convert_reading($reading, $site['format']);   
+    
     // build output array
     $sitedata['name'] = $site['name'];
     $sitedata['reading'] = $reading;
     $sitedata['link'] = $site['link'];
+    $sitedata['comment'] = $site['comment'];
+    
     return $sitedata;
 }
 
@@ -307,6 +338,13 @@ foreach ($sites as $site) {
 // compare latest data to feed and 
 // update feed file if changes required
 if ($merged = merge_site_data($feed, $latest)) {
+    // sort data array by name key
+    foreach($merged as $key => $row) {
+        // array_multisort requires array of columns to sort by
+        $name[$key] = $row['name'];   
+    }
+    array_multisort($name, SORT_ASC, $merged);
+
     file_put_contents($feedfile,json_encode($merged));
     if($debug) {
         print "<h3>Data Feed Updated:</h3>";

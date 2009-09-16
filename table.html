@@ -28,10 +28,12 @@ body {
     font-family: arial,sans-serif;
 }
 
-#data thead{
+#data td {
     margin: 0px;
-    padding: 0px;
-    border: 1px solid #666;
+    padding: 4px 9px;
+    border-right: 1px solid #999;
+    border-top: 1px solid #ccc;
+    text-align: right; 
 }
 
 #data th {
@@ -40,11 +42,14 @@ body {
     border: 1px solid #666;
 }
 
-#data td {
+#data thead{
     margin: 0px;
-    padding: 4px 9px;
-    border-right: 1px solid #999;
-    text-align: right; 
+    padding: 0px;
+    border: 1px solid #666;
+}
+
+#data table {
+    border: 1px solid #999;
 }
 
 /* CSS3 selector to stripe the table where supported */
@@ -63,10 +68,22 @@ body {
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 //<![CDATA[
-// global to keep track of update countdown
-var clockTime = 0;
 
-
+// config object
+var CFG = {
+    // to keep track of update countdown for clock
+    clockTime: 0, 
+    // how many levels units to show in time ago strings
+    timeUnitLevels: 2, 
+    // how old before data is considered out of date (bad)
+    badAge: 4*60*60, 
+    // how old before data is considered a bit old (average)
+    okAge: 15*60, 
+    // how many minutes between server updates
+    cronInterval: 5, 
+    // how long to wait for server updates to complete (milliseconds)
+    loadDelay: 8000
+};
 
 // given a number of seconds, returns a formatted "Time Ago" string
 function agostr(secs) {
@@ -76,7 +93,7 @@ function agostr(secs) {
   // maximum number of time units to display
   // e.g. 4h 10m = 2 levels
   //      1y 34d 5h 6m 10s = 5 levels
-  var level=2;
+  var level = CFG.timeUnitLevels;
     
   // loop through successively smaller time periods, trying 
   // to subtract whole numbers of units from the total
@@ -96,18 +113,19 @@ function agostr(secs) {
 
 // get the HTML string required to build a row for the data table
 function getTableRow(item) {
-    // set thresholds for age colour indicators
-    var badAge = 4*60*60; // 4 hours
-    var okAge = 15*60; // 15 minutes
     
     // extract data from object and build into individual strings
     // some formatting and type checking here to ensure we print sensible values
     
     var site = (item['name']) ? item['name'] : 'Unknown';
+    var comment = (item['comment']) ? '<small>'+item['comment']+'</small>' : '';
     var link = (item['link']) ? '<a href="'+item['link']+'">Source</a>' : '&mdash;';
+    var temp = (item['reading']['temp'] !== false) ? item['reading']['temp']+'&deg;C' : '&mdash;';
+    var pressure = (item['reading']['pressure'] !== false) ? item['reading']['pressure']+' mb' : '&mdash;';
     
-    // convert speed to 1 decimal place and add units
+    // convert wind speed and gust to 1 decimal place and add units
     var windSpeed = (item['reading']['windSpeed'] !== false) ? (Math.round(10.0*item['reading']['windSpeed'])/10.0)+' kts' : '&mdash;';
+    var windGust = (item['reading']['windGust'] !== false) ? (Math.round(10.0*item['reading']['windGust'])/10.0)+' kts' : '&mdash;';
 
     // add degree symbol to direction
     // if direction in degrees is missing, assume cardinal direction is no good either
@@ -132,22 +150,22 @@ function getTableRow(item) {
     if (obsTime !== false && diff >= 0) {
         var obsTimeFormatted = (item['reading']['obsTimeFormatted']) ? item['reading']['obsTimeFormatted'] : 'Obs time unknown';
         var agoString = agostr(diff);
-        if (diff > badAge) {
+        if (diff > CFG.badAge) {
             var quality="bad";
-        } else if (diff > okAge) {
+        } else if (diff > CFG.okAge) {
             var quality="average";
         } else {
             var quality="good";
         }
         var obsTimeStr = '<span class="'+quality+'" title="'+obsTimeFormatted+'">'+agoString+'</span>';
-        retStr += '<td>'+windSpeed+'</td><td>'+windDir+'</td><td>'+windCardinal+'</td><td>'+obsTimeStr+'</td>';
+        retStr += '<td>'+windSpeed+'</td><td>'+windDir+'</td><td>'+windCardinal+'</td><td>'+windGust+'</td><td>'+temp+'</td><td>'+pressure+'</td><td>'+obsTimeStr+'</td>';
     } else {
        // if obsTime is bad, assume that whole row is no good and show Invalid Data error
-       retStr += '<td colspan="4" style="text-align:center;"  ><span class="bad"> Invalid data</td>';
+       retStr += '<td colspan="7" style="text-align:center;"  ><span class="bad"> Invalid data</td>';
     }
 
     // finish building return string
-    retStr += '<td>'+link+'</td></tr>';
+    retStr += '<td>'+link+'</td><td>'+comment+'</td></tr>';
 
     return retStr;
 
@@ -167,7 +185,7 @@ function buildData(data){
 
 // replaces contents of #clock element with current time to update value
 function updateClock() {
-    var timeSecs = parseInt(clockTime/1000.0);
+    var timeSecs = parseInt(CFG.clockTime/1000.0);
     
     var reading = (timeSecs > 0) ? agostr(timeSecs) : 'Loading...';
 
@@ -176,13 +194,13 @@ function updateClock() {
 
 // modifies the global clockTime and updates the clock
 function resetClock(when) {
-    clockTime = when;
+    CFG.clockTime = when;
     updateClock();
 }
 
 // decrease the clock time by 1 second and updates the clock
 function decrementClock() {
-    clockTime -= 1000;
+    CFG.clockTime -= 1000;
     updateClock();
 }
 
@@ -192,24 +210,13 @@ function decrementClock() {
 // synchronise with the cron schedule of the collection script
 function getTimeToUpdate() {
     
-    // extra time to allow collection script to run
-    // may need to adjust depending on how many external feeds are being pulled in
-    // ideally we want it just long enough that collection script will always have run
-    // just before ajax request
-    var delay=8000; // milliseconds
-    
-    // modify to match different cron schedule
-    var now = new Date();
-    
-    // interval between cron calls in minutes
-    var interval = 5;
-    
     // split time into segments based on interval, then find the next
     // segment and calcuate the time to next update
+    var now = new Date();
     var currentTime = now.getMinutes()+now.getSeconds()/60;
-    var segment = parseInt(currentTime / interval);
-    var nextSegment = (segment+1)*interval;
-    var timeToUpdate = (nextSegment - currentTime) * 60 * 1000 + delay; // in milliseconds
+    var segment = parseInt(currentTime / CFG.cronInterval);
+    var nextSegment = (segment+1)*CFG.cronInterval;
+    var timeToUpdate = (nextSegment - currentTime) * 60 * 1000 + CFG.loadDelay; // in milliseconds
 
     // simple sanity check to avoid overloading the browser
     if (timeToUpdate < 1000) {
@@ -291,13 +298,17 @@ $(document).ready(function() {
  <thead>
   <tr>
    <th rowspan="2">Location</th>
-   <th colspan="3">Wind</th>
+   <th colspan="4">Wind</th>
+   <th rowspan="2">Temp.</th>
+   <th rowspan="2">Pressure</th>
    <th rowspan="2">Time Ago</th>
    <th rowspan="2">Source</th>
+   <th rowspan="2">Comment</th>
   </tr>
   <tr>
    <th>Speed</th>
    <th colspan="2">Direction</th>
+   <th>Gust</th>
  </thead>
  <tbody id="tablebody">
 
