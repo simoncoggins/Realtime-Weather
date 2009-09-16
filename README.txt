@@ -9,9 +9,10 @@ The output from collect.php is saved as a data file (currently data.json), which
 == Script ==
 
 Don't want to run too often (~5 minutes?)
-Currently running from crontab every 15 mins using curl:
+Currently running from crontab every 15 mins using curl or wget:
 
 */15 * * * * curl --silent --compressed [url] > /dev/null
+*/15 * * * * wget -qO /dev/null [url]
 
 Doesn't seem to work from Command Line due to missing modules (like xpath)
 
@@ -71,13 +72,13 @@ Note, for value checking wunderground feeds use -999 as null value (at least for
 
 == To Do ==
 
-- add lat/lng from file if present?
-- map version
-- let users pick units (e.g. kts/mph/ms^-1/kph)
+- fix time syncing issues if local time doesn't match server
+
 
 == Longer term To Do ==
 
-- Add trend graphs showing change over last few hours
+- map version
+- let users pick units (e.g. kts/mph/ms^-1/kph)- Add trend graphs showing change over last few hours
 - Add forecasts if possible
 - Recommendations/star ratings of each site in real-time?
 - or just colours to indicate good/bad conditions (right wind speed range, right wind dir for site?)

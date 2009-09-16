@@ -11,12 +11,10 @@ var CFG = {
     badAge: 4*60*60, // 4 hrs
     // how old before data is considered a bit old (average)
     okAge: 20*60, // 20 mins
-    // how many minutes between server updates
-    cronInterval: 15, 
-    // how long to wait for server updates to complete (milliseconds)
-    loadDelay: 10000,  // 10 secs
     // how long between page refreshes (to update time ago field)
     reloadInterval: 10, // seconds
+    // how often to refresh if next reload time cannot be obtained from server
+    defaultReload: 15*60*1000, // milliseconds
     // somewhere to store the data array
     data: null
 };
@@ -126,11 +124,16 @@ function buildData(){
 
 // replaces contents of #clock element with current time to update value
 function updateClock() {
-    var timeSecs = parseInt(CFG.clockTime/1000.0);
-    
-    var reading = (timeSecs > 0) ? agostr(timeSecs) : 'Loading...';
+    if(CFG.clockTime == 'Unknown') {
+        $('#clock').html('Next update time unknown');
+    } else {
 
-    $('#clock').html('Next update in '+reading);
+        var timeSecs = parseInt(CFG.clockTime/1000.0);
+    
+        var reading = (timeSecs > 0) ? agostr(timeSecs) : 'Loading...';
+
+        $('#clock').html('Next update in '+reading);
+    }
 }
 
 
@@ -143,39 +146,14 @@ function resetClock(when) {
 
 // decrease the clock time by 1 second and updates the clock
 function decrementClock() {
-    CFG.clockTime -= 1000;
-    // every reloadInterval secs, refresh the page without new data
-    if(Math.round(CFG.clockTime/1000.0) % CFG.reloadInterval == 0) {
-        buildData();
+    if (CFG.clockTime != 'Unknown') {
+        CFG.clockTime -= 1000;
+        // every reloadInterval secs, refresh the page without new data
+        if(Math.round(CFG.clockTime/1000.0) % CFG.reloadInterval == 0) {
+            buildData();
+        }
+        updateClock();
     }
-    updateClock();
-}
-
-
-// determines how long (in milliseconds) before the page 
-// should next try to obtain fresh data via ajax
-// For best results the interval and delay variables must be set in 
-// the global CFG to synchronise with the cron schedule of the collection 
-// script
-function getTimeToUpdate() {
-    
-    // split time into segments based on interval, then find the next
-    // segment and calcuate the time to next update
-    var now = new Date();
-    var currentTime = now.getMinutes()+now.getSeconds()/60;
-    var segment = parseInt(currentTime / CFG.cronInterval);
-    var nextSegment = (segment+1)*CFG.cronInterval;
-    var timeToUpdate = (nextSegment - currentTime) * 60 * 1000 + CFG.loadDelay; // in milliseconds
-
-    // simple sanity check to avoid overloading the browser
-    if (timeToUpdate < 1000) {
-        timeToUpdate = 1000;
-    }
-
-    // adjust the clock to show time to next update
-    resetClock(timeToUpdate);
-
-    return timeToUpdate; 
 }
 
 
@@ -183,7 +161,7 @@ function getTimeToUpdate() {
 // occur and setTimeout to call this function again when required
 function updateTable() {
     // get latest date from JSON and update the page
-    var source="http://localhost:8888/kiting/data.json";
+    var source="data.json";
     $.ajax({
         url: source,
         dataType: "json",
@@ -215,14 +193,32 @@ function updateTable() {
             }
     });
 
-    var nextUpdate = getTimeToUpdate();
-    if (nextUpdate && nextUpdate >= 1000) {
-        // call this function again to refresh table when new data is expected to have arrived
-        setTimeout("updateTable()",nextUpdate);
-    } else {
-        // maximum refresh rate of once every second
-        setTimeout("updateTable()",1000);
-    }
+    var updateTime;
+    $.ajax({
+        url: "nextupdate.php",
+        dataType: "json",
+        success: function(data,textStatus){
+                if(textStatus=="success") {
+                    var updateTime = data;
+                    if (updateTime < 1000) {
+                        updateTime = 1000;
+                    }
+                    resetClock(updateTime);
+                    setTimeout("updateTable()", updateTime);
+                } else {
+                    var updateTime = 'Unknown';
+                    // try again in 10 secs
+                    resetClock(updateTime);
+                    setTimeout("updateTable()", CFG.defaultReload);
+                }
+            },
+        error: function() {
+                var updateTime = 'Unknown';
+                resetClock(updateTime);
+                setTimeout("updateTable()", CFG.defaultReload);
+            }
+    });
+
 }
 
 // execute once the DOM has loaded
