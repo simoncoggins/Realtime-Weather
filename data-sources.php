@@ -40,7 +40,7 @@ $sites[] = array('name' => 'Eastbourne',
                               'temp' => 'temp_c',
                               'pressure' => 'pressure_mb',
                               'windGustMph' => 'wind_gust_mph'),
-              'comment' => 'Seems to be offline at present'
+              'comment' => 'Seems to be offline at present.'
            );
 
 $sites[] = array('name' => 'Waikanae Beach',
@@ -64,7 +64,8 @@ $sites[] = array('name' => 'Lyall Bay/Airport',
                               'obsTimeRFC822' => 'observation_time_rfc822',
                               'temp' => 'temp_c',
                               'pressure' => 'pressure_mb',
-                              'windGustMph' => 'wind_gust_mph')
+                              'windGustMph' => 'wind_gust_mph'),
+              'comment' => 'Updates hourly.'
            );
            
            $sites[] = array('name' => 'Seatoun',
@@ -124,7 +125,7 @@ $sites[] = array('name' => 'Plimmerton',
               'tagformat' => 'text',
               'tags' => array('windDir' => 3,
                               'windSpeed' => 1,
-                              'windGust' => 2,
+                              'windGust' => 140, // max gust in last minute - could also use 133
                               'temp' => 4,
                               'pressure' => 6,
                               'obsHour' => 29,

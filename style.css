@@ -1,0 +1,70 @@
+
+body {
+    font-family: arial,sans-serif;
+}
+
+#data {
+    border: 1px solid #999;
+    background-color: #eeeef6;
+    padding: 0px;
+    margin: 0px;
+    border-collapse: collapse;
+    font-family: arial,sans-serif;
+}
+
+#data td {
+    margin: 0px;
+    padding: 4px 9px;
+    border-right: 1px solid #999;
+    border-top: 1px solid #ccc;
+    text-align: right; 
+}
+
+#data th {
+    background-color: #bcf;
+    margin: 0px; padding: 4px 9px;
+    border: 1px solid #666;
+}
+
+#data thead{
+    margin: 0px;
+    padding: 0px;
+    border: 1px solid #666;
+}
+
+#data table {
+    border: 1px solid #999;
+}
+
+/* CSS3 selector to stripe the table where supported */
+#data tr:nth-child(even) {
+    background-color: #fff;   
+}
+
+.error {
+    background-color: #fcc;
+    border: 1px solid #f66;
+    padding: 5px;
+    width: 400px; 
+    text-align: center; 
+}
+
+.bad {
+    color: red;
+}
+
+.average {
+    color: orange;
+}
+
+.good {
+    color: green;
+}
+
+.alignleft {
+    text-align: left !important;
+}
+
+.aligncenter {
+    text-align: center !important;
+}

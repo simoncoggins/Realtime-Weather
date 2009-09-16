@@ -4,9 +4,16 @@ Two main elements to project:
 - PHP script to scrape data from weather sources and present as single JSON source file (collect.php)
 - JavaScript page to collect latest data and display (currently table.html)
 
+The output from collect.php is saved as a data file (currently data.json), which is read by table.html
+
 == Script ==
 
 Don't want to run too often (~5 minutes?)
+Currently running from crontab every 15 mins using curl:
+
+*/15 * * * * curl --silent --compressed [url] > /dev/null
+
+Doesn't seem to work from Command Line due to missing modules (like xpath)
 
 Input using DOM and Xpath to get values
 Needs to collect data from various sources: RSS/XML/web pages
@@ -64,8 +71,6 @@ Note, for value checking wunderground feeds use -999 as null value (at least for
 
 == To Do ==
 
-- get collect.php working from the command line/cron
-- update time ago more regularly than each server call?
 - add lat/lng from file if present?
 - map version
 - let users pick units (e.g. kts/mph/ms^-1/kph)

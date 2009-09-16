@@ -1,73 +1,5 @@
-<html>
-<head>
-<title>Latest Kiting Weather for Wellington</title>
-<style type="text/css">
+// requires JQuery
 
-.bad {
-    color: red;
-}
-
-.average {
-    color: orange;
-}
-
-.good {
-    color: green;
-}
-
-body {
-    font-family: arial,sans-serif;
-}
-
-#data {
-    border: 1px solid #999;
-    background-color: #eeeef6;
-    padding: 0px;
-    margin: 0px;
-    border-collapse: collapse;
-    font-family: arial,sans-serif;
-}
-
-#data td {
-    margin: 0px;
-    padding: 4px 9px;
-    border-right: 1px solid #999;
-    border-top: 1px solid #ccc;
-    text-align: right; 
-}
-
-#data th {
-    background-color: #bcf;
-    margin: 0px; padding: 4px 9px;
-    border: 1px solid #666;
-}
-
-#data thead{
-    margin: 0px;
-    padding: 0px;
-    border: 1px solid #666;
-}
-
-#data table {
-    border: 1px solid #999;
-}
-
-/* CSS3 selector to stripe the table where supported */
-#data tr:nth-child(even) {
-    background-color: #fff;   
-}
-
-.error {
-    background-color: #fcc;
-    border: 1px solid #f66;
-    padding: 5px;
-    width: 400px; 
-    text-align: center; 
-}
-</style>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-//<![CDATA[
 
 // config object
 var CFG = {
@@ -76,14 +8,15 @@ var CFG = {
     // how many levels units to show in time ago strings
     timeUnitLevels: 2, 
     // how old before data is considered out of date (bad)
-    badAge: 4*60*60, 
+    badAge: 4*60*60, // 4 hrs
     // how old before data is considered a bit old (average)
-    okAge: 15*60, 
+    okAge: 20*60, // 20 mins
     // how many minutes between server updates
-    cronInterval: 5, 
+    cronInterval: 15, 
     // how long to wait for server updates to complete (milliseconds)
-    loadDelay: 8000
+    loadDelay: 10000  // 10 secs
 };
+
 
 // given a number of seconds, returns a formatted "Time Ago" string
 function agostr(secs) {
@@ -110,6 +43,7 @@ function agostr(secs) {
   return out;  
   
 }
+
 
 // get the HTML string required to build a row for the data table
 function getTableRow(item) {
@@ -161,15 +95,16 @@ function getTableRow(item) {
         retStr += '<td>'+windSpeed+'</td><td>'+windDir+'</td><td>'+windCardinal+'</td><td>'+windGust+'</td><td>'+temp+'</td><td>'+pressure+'</td><td>'+obsTimeStr+'</td>';
     } else {
        // if obsTime is bad, assume that whole row is no good and show Invalid Data error
-       retStr += '<td colspan="7" style="text-align:center;"  ><span class="bad"> Invalid data</td>';
+       retStr += '<td colspan="7" class="aligncenter"><span class="bad">No data</td>';
     }
 
     // finish building return string
-    retStr += '<td>'+link+'</td><td>'+comment+'</td></tr>';
+    retStr += '<td>'+link+'</td><td class="alignleft">'+comment+'</td></tr>';
 
     return retStr;
 
 }
+
 
 // builds the HTML code that makes up the table using JSON data
 function buildData(data){
@@ -183,6 +118,7 @@ function buildData(data){
             
 }
 
+
 // replaces contents of #clock element with current time to update value
 function updateClock() {
     var timeSecs = parseInt(CFG.clockTime/1000.0);
@@ -192,11 +128,13 @@ function updateClock() {
     $('#clock').html('Next update in '+reading);
 }
 
+
 // modifies the global clockTime and updates the clock
 function resetClock(when) {
     CFG.clockTime = when;
     updateClock();
 }
+
 
 // decrease the clock time by 1 second and updates the clock
 function decrementClock() {
@@ -204,10 +142,12 @@ function decrementClock() {
     updateClock();
 }
 
+
 // determines how long (in milliseconds) before the page 
 // should next try to obtain fresh data via ajax
-// The interval and delay variables must be set in this function to 
-// synchronise with the cron schedule of the collection script
+// For best results the interval and delay variables must be set in 
+// the global CFG to synchronise with the cron schedule of the collection 
+// script
 function getTimeToUpdate() {
     
     // split time into segments based on interval, then find the next
@@ -228,6 +168,7 @@ function getTimeToUpdate() {
 
     return timeToUpdate; 
 }
+
 
 // update the table via AJAX, then calculate when next update should
 // occur and setTimeout to call this function again when required
@@ -273,10 +214,11 @@ function updateTable() {
     }
 }
 
+// execute once the DOM has loaded
 
 $(document).ready(function() {
     // Show loading indicator
-    $('tbody#tablebody').html('<tr><td colspan="6" style="text-align:center;"><strong>Loading data...</strong></td></tr>');
+    $('tbody#tablebody').html('<tr><td colspan="10" class="aligncenter"><strong>Loading data...</strong></td></tr>');
     
     // start updating the table data
     updateTable();
@@ -286,34 +228,3 @@ $(document).ready(function() {
     
 
 });
-//]]>
-</script>
-</head>
-<body>
-<h2>Wellington real-time wind data</h2>
-<p id="msg"></p>
-<p id="clock">&nbsp;</p>
-
-<table id="data">
- <thead>
-  <tr>
-   <th rowspan="2">Location</th>
-   <th colspan="4">Wind</th>
-   <th rowspan="2">Temp.</th>
-   <th rowspan="2">Pressure</th>
-   <th rowspan="2">Time Ago</th>
-   <th rowspan="2">Source</th>
-   <th rowspan="2">Comment</th>
-  </tr>
-  <tr>
-   <th>Speed</th>
-   <th colspan="2">Direction</th>
-   <th>Gust</th>
- </thead>
- <tbody id="tablebody">
-
- </tbody>
-</table>
-
-</body>
-</html>
