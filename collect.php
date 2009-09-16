@@ -114,7 +114,7 @@ function convert_reading(&$reading, $format) {
             }
             // add cardinal wind direction
             if(isset($reading['windDir'])) {
-                $reading['windCardinal'] = bearing2compass($reading['windDir']);
+                $reading['windCardinal'] = bearing2compass($reading['windDir'] % 360);
             }
             break;
         
@@ -264,14 +264,15 @@ function merge_site_data($feed, $latest) {
  */
 function bearing2compass($bearing) {
     // check input
-    if(!isset($bearing) || $bearing > 360 || $bearing < 0) {
+    if(!isset($bearing) || $bearing >= 360 || $bearing < 0) {
         return false;
     }
+
     // define cardinal directions
     $cardinals = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 
                        'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW');
     // calculate array index to use
-    $key = (int) ($bearing/360.0 * 16) + 0.5;
+    $key = (int) ( ( ($bearing+11.25) % 360)/360.0 * 16 );
 
     return $cardinals[$key];
 }
