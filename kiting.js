@@ -125,7 +125,7 @@ function buildData(){
 // replaces contents of #clock element with current time to update value
 function updateClock() {
     if(CFG.clockTime == 'Unknown') {
-        $('#clock').html('Next update time unknown');
+        $('#clock').html('Next update time unknown. Trying again in '+parseInt(CFG.defaultReload/(1000*60))+'m');
     } else {
 
         var timeSecs = parseInt(CFG.clockTime/1000.0);

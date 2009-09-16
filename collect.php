@@ -320,7 +320,8 @@ $feedfile = 'data.json';
 // message to display if viewed directly
 $message = 'This script collects real time weather data from publicly available data feeds. See 
             <a href="kiting.html">this</a> page for further information. If this script is causing 
-            problems or for further information please contact the site administrator.';
+            problems or for further information please <a href="kiting.html#contact">contact</a> the site 
+            administrator.';
 
 // import data sources to use
 require_once('data-sources.php');
