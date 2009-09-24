@@ -24,8 +24,24 @@ it doesn't seem to load the xpath module in CL mode.
 
 I'm using a .htaccess file to prevent caching of data.json.
 
+== Feature Requests from kiters ==
+
+D = Done
+
+D Include map showing where spots are
+D Mobile version of page (w/o javascript)
+D Add more feeds including multiple at same site?
+- Time to update for individual feeds
+- Tide info? More info from private sources?
+- Trends
+
+== Bugs ==
+
+- Time ago still using client time (unavoidable?)
+
 == To Do and potential ideas for futher development ==
 
+- Let people choose to see limited range of spots
 - Map version
 - Let users pick units (e.g. kts/mph/ms^-1/kph)
 - Add trend graphs showing change over last few hours

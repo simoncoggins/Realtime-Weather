@@ -40,20 +40,10 @@ $sites[] = array('name' => 'Eastbourne',
                               'temp' => 'temp_c',
                               'pressure' => 'pressure_mb',
                               'windGustMph' => 'wind_gust_mph'),
-              'comment' => ''
-           );
-
-$sites[] = array('name' => 'Waikanae Beach',
-              'link' => 'http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=IWAIKANA1',
-              'source' => 'http://api.wunderground.com/weatherstation/WXCurrentObXML.asp?ID=IWAIKANA1',
-              'format' => 'wund',
-              'tags' => array('windSpeedMph' => 'wind_mph',
-                              'windDir' => 'wind_degrees',
-                              'obsTimeRFC822' => 'observation_time_rfc822',
-                              'temp' => 'temp_c',
-                              'pressure' => 'pressure_mb',
-                              'windGust' => 'wind_gust_mph'),
-              'comment' => ''
+              'comment' => '',
+              'latitude' => '-41.292053',
+              'longitude' => '174.895782',
+              'elevation' => '10'
            );
 
 $sites[] = array('name' => 'Lyall Bay/Airport',
@@ -66,7 +56,10 @@ $sites[] = array('name' => 'Lyall Bay/Airport',
                               'temp' => 'temp_c',
                               'pressure' => 'pressure_mb',
                               'windGustMph' => 'wind_gust_mph'),
-              'comment' => 'Updates every 1-2 hours.'
+              'comment' => 'Updates every 1-2 hours.',
+              'latitude' => '-41.32722092',
+              'longitude' => '174.80528259',
+              'elevation' => '6'
            );
            
            $sites[] = array('name' => 'Seatoun',
@@ -79,10 +72,13 @@ $sites[] = array('name' => 'Lyall Bay/Airport',
                               'temp' => 'temp_c',
                               'pressure' => 'pressure_mb',
                               'windGustMph' => 'wind_gust_mph'),
-              'comment' => ''
+              'comment' => '',
+              'latitude' => '-41.326000',
+              'longitude' => '174.827576',
+              'elevation' => '93'
            );
            
-$sites[] = array('name' => 'Petone',
+$sites[] = array('name' => 'Moera/Lower Hutt',
               'link' => 'http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=IWELLING15',
               'source' => 'http://api.wunderground.com/weatherstation/WXCurrentObXML.asp?ID=IWELLING15',
               'format' => 'wund',
@@ -92,10 +88,13 @@ $sites[] = array('name' => 'Petone',
                               'temp' => 'temp_c',
                               'pressure' => 'pressure_mb',
                               'windGustMph' => 'wind_gust_mph'),
-              'comment' => ''
+              'comment' => '',
+              'latitude' => '-41.224998',
+              'longitude' => '174.901993',
+              'elevation' => '20'
            );
            
-$sites[] = array('name' => 'Point Jerningham',
+$sites[] = array('name' => 'Oriental Bay',
               'link' => 'http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=IWELLING25',
               'source' => 'http://api.wunderground.com/weatherstation/WXCurrentObXML.asp?ID=IWELLING25',
               'format' => 'wund',
@@ -105,7 +104,10 @@ $sites[] = array('name' => 'Point Jerningham',
                               'temp' => 'temp_c',
                               'pressure' => 'pressure_mb',
                               'windGustMph' => 'wind_gust_mph'),
-              'comment' => ''
+              'comment' => '',
+              'latitude' => '-41.286316',
+              'longitude' => '174.804092',
+              'elevation' => '12'
            );
 
 $sites[] = array('name' => 'Paraparaumu',
@@ -118,7 +120,10 @@ $sites[] = array('name' => 'Paraparaumu',
                               'temp' => 'temp_c',
                               'pressure' => 'pressure_mb',
                               'windGustMph' => 'wind_gust_mph'),
-              'comment' => ''
+              'comment' => '',
+              'latitude' => '-40.882565',
+              'longitude' => '175.016998',
+              'elevation' => '36'
            );
            
 // See here for clientraw.txt data specification:
@@ -139,12 +144,31 @@ $sites[] = array('name' => 'Plimmerton',
                               'obsDay' => 35,
                               'obsMon' => 36,
                               'obsYear' => 141 ),
-              'comment' => ''
+              'comment' => '',
+              'latitude' => '-41.074074',
+              'longitude' => '174.855907',
+              'elevation' => '10'
            );
 
+$sites[] = array('name' => 'Waikanae Beach',
+              'link' => 'http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=IWAIKANA1',
+              'source' => 'http://api.wunderground.com/weatherstation/WXCurrentObXML.asp?ID=IWAIKANA1',
+              'format' => 'wund',
+              'tags' => array('windSpeedMph' => 'wind_mph',
+                              'windDir' => 'wind_degrees',
+                              'obsTimeRFC822' => 'observation_time_rfc822',
+                              'temp' => 'temp_c',
+                              'pressure' => 'pressure_mb',
+                              'windGust' => 'wind_gust_mph'),
+              'comment' => '',
+              'latitude' => '-40.873611',
+              'longitude' => '175.011642',
+              'elevation' => '20'
+           );
            
-/* FORMAT FOR DATA FROM WIND.CO.NZ
-$sites[] = array('name' => 'Airport',
+/* FORMAT FOR DATA FROM WIND.CO.NZ */
+$sites[] = array('name' => 'Lyall Bay/Airport 2',
+              'link' => 'http://www.wind.co.nz/region.php',
               'source' => 'http://www.wind.co.nz/nonhtml/getxml.php?regionid=53',
               'format' => 'wind',
               'tagformat' => 'xpath',
@@ -152,12 +176,23 @@ $sites[] = array('name' => 'Airport',
                                                  'attr' => 'd'),
                               'windSpeed' => array('query' => '//sensor[@sensorid="1"]/obtb/ob[@dtid="2"]', 
                                                  'attr' => 'd'),
+                              'windGust' => array('query' => '//sensor[@sensorid="1"]/obtb/ob[@dtid="4"]', 
+                                                 'attr' => 'd'),
+                              'temp' => array('query' => '//sensor[@sensorid="1"]/obtb/ob[@dtid="3"]', 
+                                                 'attr' => 'd'),
+                              'pressure' => array('query' => '//sensor[@sensorid="1"]/obtb/ob[@dtid="6"]', 
+                                                 'attr' => 'd'),
                               'obsTimeYMDHMS' => array('query' => '//sensor[@sensorid="1"]/obtb', 
                                                  'attr' => 't')
-                             )
+                             ),
+              'comment' => '',
+              'latitude' => '',
+              'longitude' => '',
+              'elevation' => ''
            );
           
-$sites[] = array('name' => 'Paraparaumu',
+$sites[] = array('name' => 'Paraparaumu 2',
+              'link' => 'http://www.wind.co.nz/region.php',
               'source' => 'http://www.wind.co.nz/nonhtml/getxml.php?regionid=53',
               'format' => 'wind',
               'tagformat' => 'xpath',
@@ -166,8 +201,60 @@ $sites[] = array('name' => 'Paraparaumu',
                               'windSpeed' => array('query' => '//sensor[@sensorid="8"]/obtb/ob[@dtid="2"]', 
                                                  'attr' => 'd'),
                               'obsTimeYMDHMS' => array('query' => '//sensor[@sensorid="8"]/obtb', 
-                                                 'attr' => 't')
-                             )
+                                                 'attr' => 't'),
+                              'windGust' => array('query' => '//sensor[@sensorid="8"]/obtb/ob[@dtid="4"]', 
+                                                 'attr' => 'd'),
+                              'temp' => array('query' => '//sensor[@sensorid="8"]/obtb/ob[@dtid="3"]', 
+                                                 'attr' => 'd'),
+                              'pressure' => array('query' => '//sensor[@sensorid="8"]/obtb/ob[@dtid="6"]', 
+                                                 'attr' => 'd')
+                             ),
+              'comment' => '',
+              'latitude' => '',
+              'longitude' => '',
+              'elevation' => ''
            );
-*/            
+
+$sites[] = array('name' => 'Petone',
+              'link' => 'http://www.wind.co.nz/region.php',
+              'source' => 'http://www.wind.co.nz/nonhtml/getxml.php?regionid=53',
+              'format' => 'wind',
+              'tagformat' => 'xpath',
+              'tags' => array('windDir' => array('query' => '//sensor[@sensorid="34"]/obtb/ob[@dtid="1"]', 
+                                                 'attr' => 'd'),
+                              'windSpeed' => array('query' => '//sensor[@sensorid="34"]/obtb/ob[@dtid="2"]', 
+                                                 'attr' => 'd'),
+                              'obsTimeYMDHMS' => array('query' => '//sensor[@sensorid="34"]/obtb', 
+                                                 'attr' => 't'),
+                              'windGust' => array('query' => '//sensor[@sensorid="34"]/obtb/ob[@dtid="4"]', 
+                                                 'attr' => 'd'),
+                              'temp' => array('query' => '//sensor[@sensorid="34"]/obtb/ob[@dtid="3"]', 
+                                                 'attr' => 'd')
+                             ),
+              'comment' => '',
+              'latitude' => '',
+              'longitude' => '',
+              'elevation' => ''
+           );
+
+$sites[] = array('name' => 'Plimmerton 2',
+              'link' => 'http://www.wind.co.nz/region.php',
+              'source' => 'http://www.wind.co.nz/nonhtml/getxml.php?regionid=53',
+              'format' => 'wind',
+              'tagformat' => 'xpath',
+              'tags' => array('windDir' => array('query' => '//sensor[@sensorid="9"]/obtb/ob[@dtid="1"]', 
+                                                 'attr' => 'd'),
+                              'windSpeed' => array('query' => '//sensor[@sensorid="9"]/obtb/ob[@dtid="2"]', 
+                                                 'attr' => 'd'),
+                              'obsTimeYMDHMS' => array('query' => '//sensor[@sensorid="9"]/obtb', 
+                                                 'attr' => 't'),
+                              'temp' => array('query' => '//sensor[@sensorid="9"]/obtb/ob[@dtid="3"]', 
+                                                 'attr' => 'd')
+                             ),
+              'comment' => '',
+              'latitude' => '',
+              'longitude' => '',
+              'elevation' => ''
+           );
+   
 ?>

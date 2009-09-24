@@ -149,6 +149,7 @@ function convert_reading(&$reading, $format=null) {
                 }
                 unset($reading['obsTimeYMDHMS']);
             }
+
             break;
             
         case 'wdl':
@@ -177,6 +178,29 @@ function convert_reading(&$reading, $format=null) {
         $reading['obsTimeFormatted'] = strftime('%c',$reading['obsTime']);   
     } else {
         $reading['obsTimeFormatted'] = false;   
+    }
+
+    // check readings are set
+    if(!isset($reading['pressure'])) {
+        $reading['pressure'] = false;   
+    }
+    if(!isset($reading['temp'])) {
+        $reading['temp'] = false;   
+    }
+    if(!isset($reading['windGust'])) {
+        $reading['windGust'] = false;   
+    }
+    if(!isset($reading['windDir'])) {
+        $reading['windDir'] = false;   
+    }
+    if(!isset($reading['windSpeed'])) {
+        $reading['windSpeed'] = false;   
+    }
+    
+
+    // sometimes bad readings show as -999
+    if($reading['windDir'] == '-999') {
+        $reading['windDir'] = false;   
     }
 
     if($reading['windDir'] !== false) {
@@ -208,7 +232,11 @@ function get_site_data($site) {
     $sitedata['reading'] = $reading;
     $sitedata['link'] = $site['link'];
     $sitedata['comment'] = $site['comment'];
+    $sitedata['latitude'] = $site['latitude'];
+    $sitedata['longitude'] = $site['longitude'];
+    $sitedata['elevation'] = $site['elevation'];
     
+
     return $sitedata;
 }
 

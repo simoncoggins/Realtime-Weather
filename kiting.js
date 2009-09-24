@@ -48,7 +48,7 @@ function agostr(secs) {
 
 
 // get the HTML string required to build a row for the data table
-function getTableRow(item) {
+function getTableRow(item,i) {
     
     // extract data from object and build into individual strings
     // some formatting and type checking here to ensure we print sensible values
@@ -100,8 +100,19 @@ function getTableRow(item) {
        retStr += '<td colspan="7" class="aligncenter"><span class="bad">No data</td>';
     }
 
+    var latitude = (item['latitude']) ? item['latitude'] : false;
+    var longitude = (item['longitude']) ? item['longitude'] : false;
+    if (latitude && longitude) {
+        var mapStr = '<a href="#" onClick="popupMap('+i+');return false;">Map</a>';
+    } else {
+        var mapStr = '';   
+    }
+    
     // finish building return string
-    retStr += '<td>'+link+'</td><td class="alignleft">'+comment+'</td></tr>';
+    retStr += '<td>'+link+'</td><td>'+mapStr+'</td>';
+
+    // leave off the comment string for now
+    //retStr += '<td class="alignleft">'+comment+'</td></tr>';
 
     return retStr;
 
@@ -115,7 +126,7 @@ function buildData(){
     $('tbody#tablebody').html('');
     // loop through each site in turn
     $.each(data, function(i,item){
-        var htmlStr = getTableRow(item);
+        var htmlStr = getTableRow(item,i);
         $('tbody#tablebody').html($('tbody#tablebody').html()+htmlStr );
     });
             
@@ -219,6 +230,73 @@ function updateTable() {
             }
     });
 
+}
+
+function formatLatLng(lat,lng) {
+    if(lat > 90 || lat < -90 || lng > 180 || lng < -180) {
+        return false;
+    }
+    // one decimal place
+    var rlat = Math.round(lat*10)/10.0;
+    var rlng = Math.round(lng*10)/10.0;
+    var ret=Math.abs(rlat)+'&deg;';
+    ret += (rlat >= 0) ? 'N ' : 'S ';
+    ret += ', '+Math.abs(rlng)+'&deg;';
+    ret += (rlng >= 0) ? 'E' : 'W';
+    return ret;
+}
+
+function popupMap(key) {
+    var data = CFG.data;
+    var popup = '<div id="popup"><div id="lightbox"></div><div id="map"></div><div id="maptitle">'+data[key].name+' Weather Station Location<img class="close-button" src="close.png" width="25" height="25" align="right" alt="Close"></div></div>';
+
+    // insert popup into DOM
+    $('#data').after(popup);
+    // set opacity with JQuery for cross-browser compatibility
+    $('#lightbox').css({'background-color' : 'black', 'opacity' : '0.75'});
+    
+    // clicking on close button or outside map closes popup
+    $('#lightbox, #maptitle img').bind("click",function() { $('#popup').remove(); });
+
+    // Create the map
+    if (GBrowserIsCompatible()) {
+        var map = new GMap2(document.getElementById("map"));
+        var latlng = new GLatLng(data[key].latitude, data[key].longitude);
+        map.setCenter(latlng, 10);
+        map.setUIToDefault();
+        
+        var currentMarker, currentMarkerText;
+        // load markers for all stations from data object
+        $.each(data,function(i) {
+            // skip this marker if lat or long invalid
+            if(!data[i].latitude || !data[i].longitude) { return };
+            
+            // create the markers
+            var latlng = new GLatLng(data[i].latitude, data[i].longitude);
+            var mark = new GMarker(latlng);
+            var markText = '<strong>'+data[i].name+'</strong><br />';
+            markText += 'Position: '+formatLatLng(data[i].latitude,data[i].longitude)+'<br />';
+            markText += 'Elevation: '+data[i].elevation+'ft';
+            GEvent.addListener(mark,'click',function(){
+                mark.openInfoWindowHtml(markText);
+            });
+                        
+            if (key == i) {
+                currentMarker = mark;
+                currentMarkerText = markText;   
+            }
+           
+            map.addOverlay(mark);
+        });
+        
+        // open current marker and set colour to yellow
+        currentMarker.openInfoWindowHtml(currentMarkerText);
+        currentMarker.setImage('yellow-dot.png');
+        
+    } else {
+        $('#map').html('<p>Your browser is not supported. Sorry</p>');
+    }
+  
 }
 
 // execute once the DOM has loaded

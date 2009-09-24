@@ -6,9 +6,9 @@
  */
 
 // how many minutes between server updates
-$cronInterval = 15; // in minutes
+$cronInterval = 15; // 15 mins
 // how long to wait for server updates to complete (milliseconds)
-$loadDelay = 10000; // in milliseconds
+$loadDelay = 15000; // 15 secs
 
 // split time into segments based on interval, then find the next
 // segment and calcuate the time to next update

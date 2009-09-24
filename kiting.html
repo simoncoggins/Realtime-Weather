@@ -3,6 +3,7 @@
   <title>Wellington real-time weather data</title>
   <link rel="stylesheet" href="style.css" type="text/css" />
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script>
+  <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false" type="text/javascript"></script>
   <script src="kiting.js" type="text/javascript"></script>
 </head>
 <body>
@@ -18,8 +19,7 @@
    <th rowspan="2">Temp.</th>
    <th rowspan="2">Pressure</th>
    <th rowspan="2">Time Ago</th>
-   <th rowspan="2">Source</th>
-   <th rowspan="2">Comment</th>
+   <th rowspan="2" colspan="2">Station<br />Info</th>
   </tr>
   <tr>
    <th>Speed</th>
@@ -33,9 +33,9 @@
 
 <h3>Notes</h3>
 <p>
-This page shows real-time weather data around the Wellington region. It was built for the 
-<a href="http://groups.google.co.nz/group/wellingtonkitesurfers?hl=en&ie=UTF-8&pli=1">kitesurfing 
-community</a> so they'd know when it's time to get down to the beach.
+This page shows real-time weather data around the Wellington region, so the 
+<a href="http://groups.google.co.nz/group/wellingtonkitesurfers?hl=en&ie=UTF-8&pli=1">kitesurfers</a> 
+would know when it's time to get down to the beach.
 </p>
 <p>
 This page relies on pulling together data from a number of public data feeds. The data is only as good 
@@ -52,6 +52,9 @@ not just when it was collected by my script). Observations older than 20 minutes
 than four hours are red to warn they are out of date.
 </p>
 <p>
+Click on the "Map" link to see where the stations are located.
+</p>
+<p>
 The page automatically reloads when new data is expected to be available. The countdown indicator shows when 
 that will be.
 </p>
@@ -59,7 +62,9 @@ that will be.
 The source code for this project is freely available <a href="http://github.com/simoncoggins/Realtime-Weather">here</a>. 
 Please feel free to contribute or extend it for your own purposes.
 </p>
-
+<p>
+There is a simplier version of this page designed for mobile phones <a href="mob.php">here</a>.
+</p>
 <h4>Feed Owners</h4>
 <p>
 If you own one of the feeds and have a problem with my data collection script, please get in touch and 
