@@ -248,7 +248,7 @@ function formatLatLng(lat,lng) {
 
 function popupMap(key) {
     var data = CFG.data;
-    var popup = '<div id="popup"><div id="lightbox"></div><div id="map"></div><div id="maptitle">'+data[key].name+' Weather Station Location<img class="close-button" src="close.png" width="25" height="25" align="right" alt="Close"></div></div>';
+    var popup = '<div id="popup"><div id="lightbox"></div><div id="map"></div><div id="maptitle"><img class="close-button" src="close.png" width="25" height="25" align="right" alt="Close">'+data[key].name+' Weather Station Location</div></div>';
 
     // insert popup into DOM
     $('#data').after(popup);
